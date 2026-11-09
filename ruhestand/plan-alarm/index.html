@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan-Alarm: Erinnerung für Ihren Ruhestandsplan | MirraTrade</title>
+<meta name="description" content="Plan-Alarm: Hinweis per E-Mail zu Parameter-Updates zum 1.1., zum Rentenbeginn und zum Start des Altersvorsorgedepots – mit Bestätigung per Link (Double-Opt-in).">
+<link rel="canonical" href="https://mirratrade.com/ruhestand/plan-alarm/">
+<link rel="preload" href="/mirratrade-preview/assets/cdn/fonts/tildasans/TildaSans-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/mirratrade-preview/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/mirratrade-preview/assets/css/base.css?v=20261107">
+<link rel="stylesheet" href="/mirratrade-preview/assets/css/ruhestand.css?v=20261107">
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="mt-hdr"><div class="mt-hdr-in">
+  <a class="mt-hdr-logo" href="/mirratrade-preview/" aria-label="MirraTrade – Startseite"><img src="/mirratrade-preview/assets/mirratrade.svg" alt="MirraTrade" width="150" height="20"></a>
+  <nav class="mt-hdr-nav" aria-label="Hauptnavigation">
+    <a class="mt-hdr-calc" href="/mirratrade-preview/ruhestand/entnahmeplan-rechner/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg>Entnahmeplan-Rechner</a>
+  </nav>
+</div></header>
+<main id="main" class="page"><div class="wrap">
+<nav class="crumbs" aria-label="Brotkrumen"><a href="/mirratrade-preview/">Startseite</a><span aria-hidden="true"> › </span><a href="/mirratrade-preview/ruhestand/">Ruhestand</a><span aria-hidden="true"> › </span><span aria-current="page">Plan-Alarm</span></nav>
+<section class="hero"><p class="kicker">Plan-Alarm</p>
+<h1>Plan-Alarm: Eine Nachricht, wenn Ihr Plan neu geprüft werden sollte</h1>
+<p class="lead">Ein Ruhestandsplan ist nur so gut wie seine Parameter. Wenn sich Steuer- und Beitragswerte ändern oder ein Termin naht, schreiben wir Ihnen – nur dazu, nur an die Adresse, die Sie hier eintragen.</p></section>
+
+<div class="letter">
+<div class="meta">An: Sie · Betreff: Ihr Plan-Alarm · Absender: MirraTrade</div>
+<p>Guten Tag,</p>
+<p>so funktioniert der Plan-Alarm: Sie tragen Ihre E-Mail-Adresse ein und wählen, wozu Sie Nachrichten möchten. Wir schicken Ihnen zuerst <b>eine Bestätigungs-E-Mail</b>. Erst wenn Sie darin auf den Link klicken, ist die Anmeldung gültig (Double-Opt-in). Ohne Klick passiert nichts.</p>
+<form id="alarm" novalidate>
+<div class="fld"><label for="email">Ihre E-Mail-Adresse</label><input class="inp" id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-err"><div class="err" id="email-err" hidden>Bitte tragen Sie eine gültige E-Mail-Adresse ein.</div></div>
+<div class="fld"><label for="plan">Link zu Ihrem Plan (optional)</label><input class="inp" id="plan" name="plan" type="url" inputmode="url" placeholder="https://mirratrade.com/ruhestand/entnahmeplan-rechner/#kapital=…" aria-describedby="plan-h"><div class="hint" id="plan-h">Den Link kopieren Sie aus der Adresszeile des Rechners. Er enthält Ihre Zahlen; wir speichern ihn nur mit Ihrer Anmeldung.</div></div>
+<fieldset class="topics"><legend>Wozu möchten Sie Nachrichten?</legend>
+<label class="opt"><input type="checkbox" name="topic" value="parameter-update" checked><span><b>Parameter-Update zum 1.1.</b><br><span class="small muted">Wenn sich Steuer- und Beitragswerte im Rechner ändern, mit Hinweis, was das für Ihren Plan bedeutet.</span></span></label>
+<label class="opt"><input type="checkbox" name="topic" value="rentenbeginn"><span><b>Erinnerung zum Rentenbeginn</b><br><span class="small muted">Eine Nachricht vor dem Alter, ab dem Ihre Rente laut Plan fließt.</span></span></label>
+<label class="opt"><input type="checkbox" name="topic" value="avd-start"><span><b>Altersvorsorgedepot-Start</b><br><span class="small muted">Wenn es zum Start am 1.1.2027 neue Informationen im Rechner gibt.</span></span></label></fieldset>
+<div class="err" id="topic-err" hidden>Bitte wählen Sie mindestens ein Thema.</div>
+<label class="opt"><input type="checkbox" id="consent" required><span class="small">Ich möchte die gewählten Nachrichten per E-Mail erhalten und weiß, dass ich mich jederzeit abmelden kann. Zur Verarbeitung siehe <a href="/mirratrade-preview/datenschutz/">Datenschutz</a>.</span></label>
+<div class="err" id="consent-err" hidden>Bitte bestätigen Sie die Einwilligung.</div>
+<p style="margin-top:16px"><button class="btn btn--lg" type="submit">Plan-Alarm anfordern</button></p>
+</form>
+<div class="form-msg note" id="ok" role="status" hidden></div>
+<div class="form-msg note note--warn" id="bad" role="alert" hidden>Das hat nicht geklappt. Bitte versuchen Sie es später noch einmal.</div>
+<p>Mit freundlichen Grüßen<br>MirraTrade</p>
+</div>
+
+<section class="block" aria-labelledby="was"><h2 id="was">Was wir senden – und was nicht</h2>
+<ul class="ticks"><li>Eine Bestätigungs-E-Mail mit Link. Danach nur Nachrichten zu den Themen, die Sie angehakt haben.</li>
+<li>Keine Produktangebote, keine Empfehlung einer Bank oder eines Fonds, keine Anlageberatung.</li>
+<li>Keine Weitergabe Ihrer Adresse zu Werbezwecken. <span class="chip chip--warn">[Platzhalter: Datenschutzerklärung abgleichen]</span></li>
+<li>Abmeldung per Link in jeder Nachricht. <span class="chip chip--warn">[Platzhalter: Versandsystem festlegen]</span></li></ul>
+<p class="note note--warn">Solange auf dieser Seite kein Versandsystem hinterlegt ist, läuft das Formular im Demo-Modus: Es prüft Ihre Eingaben, überträgt aber nichts.</p></section>
+<p class="quellen"><b>Quellen:</b> Parameter und Stand: <a href="/mirratrade-preview/ruhestand/methodik/">Methodik und Quellen</a> (Stand 01.11.2026) · Altersvorsorgedepot: <a href="https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Moeglichkeiten-der-Altersvorsorge/Altervorsorgereformgesetz.html" target="_blank" rel="noopener">Deutsche Rentenversicherung, Altersvorsorgereformgesetz</a>.</p>
+</div></main>
+<footer class="mt-ftr"><div class="wrap">
+<p>MirraTrade · Rechner zur Ruhestandsplanung – Modellrechnungen ohne Anlage-, Steuer- oder Rechtsberatung.</p>
+<p><a href="/mirratrade-preview/">Startseite</a><a href="/mirratrade-preview/ruhestand/">Ruhestand planen</a><a href="/mirratrade-preview/ruhestand/entnahmeplan-rechner/">Entnahmeplan-Rechner</a><a href="/mirratrade-preview/ruhestand/methodik/">Methodik und Quellen</a><a href="/mirratrade-preview/impressum/">Impressum</a><a href="/mirratrade-preview/datenschutz/">Datenschutz</a></p>
+</div></footer>
+<script src="/mirratrade-preview/assets/js/config.js" defer></script>
+<script src="/mirratrade-preview/assets/js/site.js?v=20261107" defer></script>
+<script src="/mirratrade-preview/assets/js/pages/plan-alarm.js?v=20261107" defer></script>
+</body>
+</html>

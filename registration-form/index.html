@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jetzt starten – Kontakt · MirraTrade</title>
+<meta name="description" content="Hinterlassen Sie Ihre Kontaktdaten – ein Experte von MirraTrade meldet sich bei Ihnen. Jedes Geschäft birgt Risiken.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://mirratrade.com/registration-form/">
+<link rel="preload" href="/mirratrade-preview/assets/cdn/fonts/tildasans/TildaSans-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/mirratrade-preview/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/mirratrade-preview/assets/css/base.css?v=20261107">
+<link rel="stylesheet" href="/mirratrade-preview/assets/css/home.css?v=20261107">
+<style>
+.reg{display:grid;grid-template-columns:6fr 5fr;gap:56px;padding:64px 0 24px;align-items:start}
+.reg h1{font-size:clamp(30px,4.2vw,46px);line-height:1.08;max-width:12em}
+.reg-claims{list-style:none;margin:28px 0 0;padding:0;border-top:1px solid var(--ink)}
+.reg-claims li{padding:16px 0;border-bottom:1px solid var(--line);font-size:18px;color:var(--ink2);display:grid;grid-template-columns:40px 1fr}
+.reg-claims li::before{content:"";width:10px;height:10px;margin-top:9px;background:var(--accent);transform:rotate(45deg)}
+.reg-ctx{margin-top:22px;font-size:15px;color:var(--muted)}
+.reg-ctx[hidden]{display:none}
+.reg-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px}
+.reg-card h2{font-size:22px;margin-bottom:18px}
+.tel{display:grid;grid-template-columns:118px 1fr;gap:8px}
+.opt{font-weight:400;color:var(--muted)}
+.amt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0;border:0}
+.amt legend{font-size:14px;font-weight:700;margin:0 0 6px;padding:0}
+.amt label{display:flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--line);border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;text-align:center;padding:0 8px}
+.amt input{position:absolute;opacity:0;pointer-events:none}
+.amt label:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--accent-d)}
+.amt label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.tagp{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;color:var(--accent-d)}
+.cons{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:14px;color:var(--ink2);margin:16px 0}
+.cons input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent)}
+.reg-card .btn{width:100%}
+.hp{position:absolute;left:-9999px}
+.done{padding:18px;border-radius:12px;background:var(--accent-soft)}
+.done strong{display:block;font-size:18px;margin-bottom:6px}
+@media (max-width:860px){.reg{grid-template-columns:1fr;gap:32px;padding-top:36px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="mt-hdr"><div class="mt-hdr-in">
+  <a class="mt-hdr-logo" href="/mirratrade-preview/" aria-label="MirraTrade – Startseite"><img src="/mirratrade-preview/assets/mirratrade.svg" alt="MirraTrade" width="150" height="20"></a>
+  <nav class="mt-hdr-nav" aria-label="Hauptnavigation">
+    <a class="mt-hdr-calc" href="/mirratrade-preview/ruhestand/entnahmeplan-rechner/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg>Entnahmeplan-Rechner</a>
+  </nav>
+</div></header>
+<main id="main"><div class="wrap">
+<section class="reg">
+ <div>
+  <p class="kicker">Jetzt starten</p>
+  <h1>Quantitative Arbitrage – jetzt auch für Privatanleger</h1>
+  <ul class="reg-claims">
+   <li>Passives Einkommen, unabhängig von der Marktentwicklung</li>
+   <li>Wir prognostizieren keine Märkte – wir identifizieren Chancen</li>
+   <li>Systematisch, diszipliniert, unabhängig</li>
+  </ul>
+  <p class="reg-ctx" id="reg-ctx" hidden></p>
+ </div>
+ <div class="reg-card">
+  <h2>Ihre Kontaktdaten</h2>
+  <form id="reg" novalidate>
+   <div class="fld"><label for="r-name">Ihr Name *</label><input class="inp" id="r-name" name="name" autocomplete="name" required maxlength="80"><p class="err" id="r-name-e" hidden>Bitte geben Sie Ihren Namen an.</p></div>
+   <div class="fld"><label for="r-tel">Ihre Telefonnummer *</label>
+    <div class="tel"><select class="inp" id="r-cc" name="vorwahl" aria-label="Ländervorwahl"><option value="+49">DE +49</option><option value="+43">AT +43</option><option value="+41">CH +41</option><option value="+32">BE +32</option><option value="+31">NL +31</option><option value="+352">LU +352</option><option value="+34">ES +34</option><option value="+39">IT +39</option><option value="+351">PT +351</option><option value="">Andere</option></select><input class="inp" id="r-tel" name="telefon" type="tel" autocomplete="tel-national" inputmode="tel" required maxlength="24"></div>
+    <p class="err" id="r-tel-e" hidden>Bitte geben Sie eine Telefonnummer an (mindestens 6 Ziffern).</p></div>
+   <div class="fld"><label for="r-mail">Ihre E-Mail-Adresse <span class="opt">(optional)</span></label><input class="inp" id="r-mail" name="email" type="email" autocomplete="email" maxlength="120"><p class="err" id="r-mail-e" hidden>Bitte prüfen Sie die E-Mail-Adresse.</p></div>
+   <fieldset class="amt" id="r-amt"><legend>Wie viel möchten Sie investieren? <span class="opt">(optional)</span><span class="tagp" id="r-amt-tag" hidden>aus Ihrer Rechnung übernommen</span></legend>
+    <label><input type="radio" name="betrag" value="10.000 €">10.000 €</label>
+    <label><input type="radio" name="betrag" value="50.000 €">50.000 €</label>
+    <label><input type="radio" name="betrag" value="100.000 €">100.000 €</label>
+    <label><input type="radio" name="betrag" value="Mehr als 100.000 €">Mehr als 100.000 €</label>
+   </fieldset>
+   <input class="hp" type="text" name="firma" tabindex="-1" autocomplete="off" aria-hidden="true">
+   <label class="cons"><input type="checkbox" name="consent" id="r-cons" required><span>Ich bin einverstanden, dass MirraTrade mich zu meiner Anfrage telefonisch oder per E-Mail kontaktiert und meine Angaben dafür verarbeitet. Widerruf jederzeit möglich. Details in der <a href="/mirratrade-preview/datenschutz/">Datenschutzerklärung</a>. *</span></label>
+   <p class="err" id="r-cons-e" hidden>Bitte bestätigen Sie die Einwilligung.</p>
+   <button class="btn" type="submit">Absenden</button>
+  </form>
+  <div id="reg-done" hidden></div>
+ </div>
+</section>
+<p class="risk risk-line">Risikohinweis: Jedes Geschäft birgt Risiken. Die Wertentwicklung in der Vergangenheit ist keine Garantie für zukünftige Ergebnisse.</p>
+</div></main>
+<footer class="mt-ftr"><div class="wrap">
+<p>© 2026, MirraTrade. Alle Rechte vorbehalten.</p>
+<p><a href="/mirratrade-preview/">Startseite</a><a href="/mirratrade-preview/ruhestand/">Ruhestand planen</a><a href="/mirratrade-preview/ruhestand/entnahmeplan-rechner/">Entnahmeplan-Rechner</a><a href="/mirratrade-preview/impressum/">Impressum</a><a href="/mirratrade-preview/datenschutz/">Datenschutz</a></p>
+</div></footer>
+<script src="/mirratrade-preview/assets/js/config.js" defer></script>
+<script src="/mirratrade-preview/assets/js/site.js?v=20261107" defer></script>
+<script src="/mirratrade-preview/assets/js/reg-form.js?v=20261107" defer></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+# Regeln überschneiden sich bewusst nicht (Netlify fügt gleichnamige Header zusammen).
+# CSS/JS werden per ?v=JJJJMMTT versioniert – bei Änderungen in allen HTML-Dateien hochzählen.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+
+/
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/404.html
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/ruhestand/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/lc002-eti/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/registration-form/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/impressum/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/datenschutz/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Cache-Control: public, max-age=0, must-revalidate
+
+/embed/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-G50p3OQJdzmNSHgmrckkRv9E5DVGNkEspwW0gLrWXBE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; form-action 'self' https:; frame-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors *
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/cdn/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/js/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
