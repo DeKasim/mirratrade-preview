@@ -1,0 +1,9 @@
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:600px;height:450px;overflow:hidden}
+body{font-family:Inter,"DejaVu Sans",sans-serif;background:#eef2f0;color:#0d2a3f;position:relative}
+.foot{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:13px;color:#3d5566}
+.tag{position:absolute;top:14px;left:18px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#3d5566}
+.card{background:#fff;border:2px solid #cfd8d4;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.q{background:#0d6b5e;border-color:#0d6b5e;color:#fff}
+.down{font-size:15px;font-weight:600;color:#0d2a3f;display:flex;align-items:center;gap:6px}
+.down svg{width:16px;height:16px}

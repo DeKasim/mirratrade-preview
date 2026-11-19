@@ -6,10 +6,56 @@
   var BANKS = window.MT_BANKS || [];
   var LANDS = [['DE', 'Deutschland'], ['AT', 'Österreich'], ['CH', 'Schweiz'], ['OTHER', 'Anderes Land']];
   var BANDS = ['bis 5.000 €', '5.000–25.000 €', '25.000–100.000 €', 'über 100.000 €', 'möchte ich nicht sagen'];
-  var CALL = 'Ich willige ein, dass mich MirraTrade, der Betreiber dieser Seite, unter dieser Nummer anruft – zum LUMEROOS CAPITAL LC002 ETI und zum Kauf über meine Bank. Nur für diese Anfrage, jederzeit widerrufbar, auch im Gespräch.';
+  var CALL = 'Ich willige ein, dass mich MirraTrade, der Betreiber dieser Seite, unter dieser Nummer anruft – zum LUMEROOS CAPITAL LC002 ETI und zum Kauf über meine Bank. Den ersten Anruf kann ein automatisierter Telefonassistent übernehmen, der nur die passende Zeit für das Gespräch erfragt. Nur für diese Anfrage, jederzeit widerrufbar, auch im Gespräch.';
   var DATA = 'Ich willige ein, dass MirraTrade meine Angaben zur Bearbeitung dieser Anfrage verwendet (Anruf, auf Wunsch E-Mail). Die Einwilligung in den Anruf wird mit Zeitpunkt als Nachweis gespeichert. Widerruf jederzeit, auch im Gespräch.';
+  var CALL_ALLG = 'Ich willige ein, dass mich MirraTrade, der Betreiber dieser Seite, unter dieser Nummer anruft – zu meiner Anfrage (Ruhestandsplanung oder LUMEROOS CAPITAL LC002 ETI). Den ersten Anruf kann ein automatisierter Telefonassistent übernehmen, der nur die passende Zeit für das Gespräch erfragt. Nur für diese Anfrage, jederzeit widerrufbar, auch im Gespräch.';
   var LATER = 'Ich willige ein, dass MirraTrade meine Angaben zur Bearbeitung dieser Anfrage verwendet und mich später über diese Kontaktdaten kontaktiert. Widerruf jederzeit.';
+  var FORM_VERSION = 'lf-2026-11-19';
+  var CC = { DE: '49', AT: '43', CH: '41' };
   var n = 0;
+  /* Telefonnummer → E.164 (+4917…), soweit aus Eingabe und Land der Nummer ableitbar; sonst '' */
+  function toE164(tel, land) {
+    var t = String(tel || '').replace(/[\s()\/.\-]/g, '');
+    if (/^00\d/.test(t)) t = '+' + t.slice(2);
+    if (/^\+\d{7,15}$/.test(t)) return t;
+    var cc = CC[land]; if (!cc || !/^\d{6,14}$/.test(t)) return '';
+    return '+' + cc + t.replace(/^0/, '');
+  }
+  /* ---------- Rückrufzeit (Europe/Berlin) ---------- */
+  var HOURS = (window.MT_CONFIG || {}).CALL_HOURS || { days: [1, 2, 3, 4, 5, 6], from: 9, to: 20 };
+  var WINDOWS = [[9, 12], [12, 15], [15, 18], [18, 20]].filter(function (w) { return w[0] >= HOURS.from && w[1] <= HOURS.to; });
+  var WD = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], WDL = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  function berlinNow() {
+    var p = {}; new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
+      .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+    return { d: new Date(Date.UTC(+p.year, +p.month - 1, +p.day)), h: (+p.hour % 24) + (+p.minute) / 60 };
+  }
+  function addDays(d, n) { return new Date(d.getTime() + n * 864e5); }
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  function dm(d) { return ('0' + d.getUTCDate()).slice(-2) + '.' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '.'; }
+  function isCallDay(d) { return HOURS.days.indexOf(d.getUTCDay()) >= 0; }
+  /* offene Zeitfenster eines Tages: heute nur Fenster, die noch mindestens eine Stunde laufen */
+  function windowsFor(d, now) { return WINDOWS.filter(function (w) { return iso(d) !== iso(now.d) || now.h <= w[1] - 1; }); }
+  /* die nächsten drei Anruftage mit freien Fenstern */
+  function callDays() {
+    var now = berlinNow(), out = [];
+    for (var i = 0; out.length < 3 && i < 14; i++) {
+      var d = addDays(now.d, i); if (!isCallDay(d) || !windowsFor(d, now).length) continue;
+      out.push({ iso: iso(d), d: d, label: i === 0 ? 'Heute' : i === 1 ? 'Morgen' : WD[d.getUTCDay()] + ', ' + dm(d), long: (i === 0 ? 'heute' : i === 1 ? 'morgen' : 'am ' + WDL[d.getUTCDay()]) + ' (' + WD[d.getUTCDay()] + ', ' + dm(d) + ')' });
+    }
+    return out;
+  }
+  /* wann der Telefonassistent anruft, wenn keine Zeit gewählt wurde */
+  function botSlot() {
+    var now = berlinNow();
+    if (isCallDay(now.d) && now.h >= HOURS.from && now.h < HOURS.to - 0.25) return { sofort: true, text: 'in den nächsten Minuten' };
+    for (var i = now.h < HOURS.from ? 0 : 1; i < 14; i++) {
+      var d = addDays(now.d, i); if (!isCallDay(d)) continue;
+      return { sofort: false, iso: iso(d) + 'T' + ('0' + HOURS.from).slice(-2) + ':00', text: (i === 0 ? 'heute' : i === 1 ? 'morgen' : 'am ' + WDL[d.getUTCDay()]) + ' (' + WD[d.getUTCDay()] + ', ' + dm(d) + ') ab ' + HOURS.from + ' Uhr' };
+    }
+    return { sofort: false, text: 'am nächsten Werktag' };
+  }
+  function bankName(id) { for (var i = 0; i < BANKS.length; i++) if (BANKS[i].id === id) return BANKS[i].name; return id === 'andere' ? 'andere Bank' : (id === 'kein-depot' ? '' : id || ''); }
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function norm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9äöüß]+/g, ''); }
@@ -35,7 +81,7 @@
     return BANDS.indexOf(v) >= 0 ? v : '';
   }
   function urlParams() {
-    var o = {}; try { var u = new URLSearchParams(location.search); o.bank = u.get('bank'); o.betrag = u.get('betrag'); o.land = u.get('land'); } catch (e) {}
+    var o = {}; try { var u = new URLSearchParams(location.search); o.bank = u.get('bank'); o.betrag = u.get('betrag'); o.land = u.get('land'); o.quelle = u.get('quelle'); } catch (e) {}
     return o;
   }
   function radios(name, list, checked) {
@@ -47,6 +93,7 @@
 
   function init(root) {
     var uid = 'lf' + (++n), short = root.getAttribute('data-mode') === 'short', preset = root.getAttribute('data-bank') || '';
+    var callText = root.getAttribute('data-topic') === 'allgemein' ? CALL_ALLG : CALL;
     var pf = MT.prefill ? MT.prefill.get() : {}, up = urlParams();
     var st = {
       land: normLand(up.land) || normLand(pf.land),
@@ -65,7 +112,6 @@
     var more = short ? '' :
       '<details><summary>Weitere Angaben (optional)</summary>' +
       '<div class="fld"><label for="' + uid + '-mail">E-Mail (freiwillig)</label><input class="inp" id="' + uid + '-mail" name="email" type="email" autocomplete="email"></div>' +
-      '<fieldset><legend>Wann erreichen wir Sie am besten? (freiwillig)</legend><div class="seg">' + radios('zeit', [['', 'Keine Vorgabe'], ['Vormittags', 'Vormittags'], ['Nachmittags', 'Nachmittags'], ['Abends', 'Abends']], '') + '</div></fieldset>' +
       '<fieldset><legend>Worum soll es im Gespräch gehen? (freiwillig)</legend>' +
       ['Das Wertpapier LC002 ETI', 'Der Kauf über meine Bank', 'Die Unterlagen (Basisinformationsblatt, Basisprospekt)'].map(function (t) { return '<label class="ck"><input type="checkbox" name="thema" value="' + esc(t) + '"><span>' + esc(t) + '</span></label>'; }).join('') + '</fieldset></details>';
 
@@ -74,7 +120,8 @@
       '<div class="fld"><label for="' + uid + '-bank">Ihre Bank oder Ihr Broker (freiwillig)' + tagHtml('bank') + '</label><select class="inp" id="' + uid + '-bank" name="bank" style="max-width:360px">' + bankOpts + '</select></div>' +
       '<fieldset><legend>Ungefährer Betrag (freiwillig)' + tagHtml('band') + '</legend><div class="seg">' + radios('betrag', BANDS.map(function (b) { return [b, b]; }), '') + '</div></fieldset>';
 
-    var emailShort = short ? '<div class="fld"><label for="' + uid + '-mail">Ihre E-Mail-Adresse (freiwillig)</label><input class="inp" id="' + uid + '-mail" name="email" type="email" autocomplete="email"></div>' : '';
+    var emailShort = short ? '<div class="fld"><label for="' + uid + '-mail">Ihre E-Mail-Adresse (freiwillig)</label><input class="inp" id="' + uid + '-mail" name="email" type="email" autocomplete="email"></div>' +
+      '<fieldset><legend>Ungefährer Betrag (freiwillig)' + tagHtml('band') + '</legend><div class="seg">' + radios('betrag', BANDS.map(function (b) { return [b, b]; }), '') + '</div></fieldset>' : '';
 
     root.innerHTML = '<div class="lf">' + step1 +
       '<div data-s="2" hidden><form novalidate>' +
@@ -84,9 +131,13 @@
       '<div class="fld"><label for="' + uid + '-name">' + (short ? 'Ihr Name' : 'Name') + ' *</label><input class="inp" id="' + uid + '-name" name="name" autocomplete="name" required></div>' +
       '<div class="fld"><label for="' + uid + '-tel">' + (short ? 'Ihre Telefonnummer' : 'Telefonnummer für den Rückruf') + ' *</label><input class="inp" id="' + uid + '-tel" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required></div>' +
       '<fieldset><legend>Land der Telefonnummer</legend><div class="seg">' + radios('tland', LANDS, st.land || 'DE') + '</div></fieldset>' +
+      '<fieldset class="lf-time"><legend>Wann dürfen wir Sie anrufen? (freiwillig)</legend>' +
+        '<div class="seg" data-days role="group" aria-label="Tag">' + callDays().map(function (d) { return '<label><input type="radio" name="tag" value="' + d.iso + '" data-long="' + esc(d.long) + '"><span>' + esc(d.label) + '</span></label>'; }).join('') + '</div>' +
+        '<div class="seg" data-wins role="group" aria-label="Uhrzeit" hidden></div>' +
+        '<p class="small lf-time-hint" data-time-hint aria-live="polite"></p></fieldset>' +
       emailShort + depotBank + more +
       '<div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>' +
-      '<label class="ck"><input type="checkbox" name="c_call" required><span>' + CALL + ' *</span></label>' +
+      '<label class="ck"><input type="checkbox" name="c_call" required><span>' + callText + ' *</span></label>' +
       '<label class="ck"><input type="checkbox" name="c_data" required><span>' + DATA + ' *</span></label>' +
       '<div class="err" role="alert" data-err></div>' +
       '<button type="submit" class="btn">Rückruf anfordern</button>' +
@@ -156,15 +207,38 @@
       if (t.name === 'betrag') { st.dirty.band = true; setTag('band', false); }
       if (short && t.name === 'tland' && (t.value === 'CH' || t.value === 'OTHER')) { if (MT.track) MT.track('form_step1', { land: t.value }); route(t.value, false); }
     });
+    /* Rückrufzeit: Tag → Zeitfenster; ohne Wahl ruft der Telefonassistent an */
+    var daysBox = form.querySelector('[data-days]'), winBox = form.querySelector('[data-wins]'), hint = form.querySelector('[data-time-hint]');
+    function timeHint() {
+      var t = chosen(form, 'tag'), w = chosen(form, 'fenster');
+      if (t && w) hint.innerHTML = 'Wir rufen Sie <strong>' + esc(form.querySelector('input[name=tag]:checked').getAttribute('data-long') + ' zwischen ' + w.replace('–', ' und ') + ' Uhr') + '</strong> an. <button type="button" class="lf-link" data-time-reset>Keine Wunschzeit</button>';
+      else if (t) hint.textContent = 'Bitte wählen Sie noch ein Zeitfenster.';
+      else { var b = botSlot(); hint.textContent = 'Keine Zeit gewählt? Dann ruft Sie unser automatischer Telefonassistent ' + b.text + ' kurz an und fragt, wann ein Gespräch für Sie passt.'; }
+    }
+    function renderWins() {
+      var t = form.querySelector('input[name=tag]:checked'); winBox.hidden = !t; if (!t) { winBox.innerHTML = ''; return; }
+      var d = new Date(t.value + 'T00:00:00Z'), ws = windowsFor(d, berlinNow());
+      winBox.innerHTML = ws.map(function (w) { var v = w[0] + '–' + w[1]; return '<label><input type="radio" name="fenster" value="' + v + '"><span>' + v + ' Uhr</span></label>'; }).join('');
+    }
+    daysBox.addEventListener('change', function () { renderWins(); timeHint(); });
+    winBox.addEventListener('change', timeHint);
+    hint.addEventListener('click', function (e) {
+      if (!e.target.closest('[data-time-reset]')) return;
+      [].forEach.call(form.querySelectorAll('input[name=tag]:checked'), function (x) { x.checked = false; });
+      renderWins(); timeHint();
+    });
+    timeHint();
+
     document.addEventListener('mt:prefill', function () {
       var b = normBank((MT.prefill && MT.prefill.get() || {}).bank);
       if (b && !st.dirty.bank && !preset) applyBank(b, true);
     });
 
-    function done(demo, text) {
-      views.ok.innerHTML = '<div class="lf-ok">' + text + '</div>' +
-        (demo ? '<p class="lf-demo"><strong>Demo-Modus:</strong> Ihre Angaben wurden NICHT übertragen – für diese Website ist noch kein Empfangsendpunkt eingerichtet.</p>' : '');
+    var DEMO = '<p class="lf-demo"><strong>Demo-Modus:</strong> Ihre Angaben wurden NICHT übertragen – für diese Website ist noch kein Empfangsendpunkt eingerichtet.</p>';
+    function done(demo, text, popup) {
+      views.ok.innerHTML = '<div class="lf-ok">' + text + '</div>' + (demo ? DEMO : '');
       view('ok'); if (views.ok.scrollIntoView) views.ok.scrollIntoView({ block: 'nearest' });
+      if (popup) thanks(popup, demo);
     }
     function submit(f, build, okText, evt) {
       f.addEventListener('submit', function (e) {
@@ -172,19 +246,22 @@
         var box = f.querySelector('[data-err]'), btn = f.querySelector('button[type=submit]'), v = build(f);
         box.textContent = '';
         if (v.error) { box.textContent = v.error; return; }
-        if (f.elements.website && f.elements.website.value) { done(false, okText); return; } /* Honeypot */
+        if (f.elements.website && f.elements.website.value) { done(false, okText, v.popup); return; } /* Honeypot */
         btn.disabled = true;
         var P = MT.send ? MT.send('FORM_ENDPOINT', v.payload) : Promise.resolve({ demo: true });
         P.then(function (r) {
           var demo = !!(r && r.demo); v.track.demo = demo;
           if (MT.track) MT.track(evt, v.track);
-          done(demo, demo ? 'Formular geprüft.' : okText);
+          done(demo, demo ? 'Formular geprüft.' : okText, v.popup);
         }, function () { btn.disabled = false; box.textContent = 'Die Übermittlung ist fehlgeschlagen. Bitte versuchen Sie es erneut.'; });
       });
     }
     function val(f, k) { var e = f.elements[k]; return e ? String(e.value || '').trim() : ''; }
     function chosen(f, k) { var e = f.querySelector('input[name=' + k + ']:checked'); return e ? e.value : ''; }
-    var okCall = 'Danke – Ihre Bitte um Rückruf ist bei MirraTrade angekommen. MirraTrade ruft Sie unter der angegebenen Nummer an. Gekauft wird nur über Ihre Bank.';
+    var phone = String((window.MT_CONFIG || {}).CONTACT_PHONE || '');
+    var okCall = 'Danke – Ihre Bitte um Rückruf ist bei MirraTrade angekommen. ' +
+      (/^\+\d[\d\s]{6,}$/.test(phone) ? 'Wir rufen Sie von <strong>' + esc(phone) + '</strong> an – am besten speichern Sie die Nummer, damit Sie den Anruf erkennen. ' : 'MirraTrade ruft Sie unter der angegebenen Nummer an. ') +
+      'Gekauft wird nur über Ihre Bank.';
 
     submit(form, function (f) {
       var tel = val(f, 'telefon'), digits = tel.replace(/[\s()\/.\-+]/g, '');
@@ -192,11 +269,27 @@
       if (!/^\d{6,15}$/.test(digits)) return { error: 'Bitte geben Sie eine gültige Telefonnummer an.' };
       var em = val(f, 'email'); if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return { error: 'Bitte prüfen Sie die E-Mail-Adresse.' };
       if (!f.elements.c_call.checked || !f.elements.c_data.checked) return { error: 'Bitte stimmen Sie beiden Einwilligungen zu, damit wir Sie anrufen dürfen.' };
+      var tag = chosen(f, 'tag'), fenster = chosen(f, 'fenster');
+      if (tag && !fenster) return { error: 'Bitte wählen Sie ein Zeitfenster für den Anruf – oder lassen Sie den Tag leer.' };
+      var rr, when;
+      if (tag) {
+        var lng = f.querySelector('input[name=tag]:checked').getAttribute('data-long'), fw = fenster.split('–');
+        rr = { modus: 'termin', tag: tag, fenster: fenster, von: tag + 'T' + ('0' + fw[0]).slice(-2) + ':00', bis: tag + 'T' + ('0' + fw[1]).slice(-2) + ':00', zeitzone: 'Europe/Berlin' };
+        when = 'Wir rufen Sie <strong>' + esc(lng + ' zwischen ' + fw[0] + ' und ' + fw[1] + ' Uhr') + '</strong> an.';
+      } else {
+        var bs = botSlot();
+        rr = { modus: 'assistent', assistent_ab: bs.sofort ? 'sofort' : (bs.iso || ''), zeitzone: 'Europe/Berlin' };
+        when = (bs.sofort ? '<strong>In den nächsten Minuten</strong>' : '<strong>' + esc(bs.text.charAt(0).toUpperCase() + bs.text.slice(1)) + '</strong>') + ' ruft Sie unser automatischer Telefonassistent kurz an und fragt, wann ein Gespräch für Sie passt.';
+      }
       var bank = f.elements.bank ? f.elements.bank.value : (st.bank || ''), betrag = chosen(f, 'betrag');
       var thema = [].map.call(f.querySelectorAll('input[name=thema]:checked'), function (x) { return x.value; });
+      var quelle = up.quelle || (MT.prefill && MT.prefill.get().quelle) || '';
+      var tl = chosen(f, 'tland'), e164 = toE164(tel, tl);
+      var lead = { bank: bankName(bank), betrag: betrag, quelle: quelle, thema: thema };
       return {
-        payload: { type: 'rueckruf', land: st.land || 'DE', telefon: tel, telefon_land: chosen(f, 'tland'), name: val(f, 'name'), email: em, zeit: chosen(f, 'zeit'), thema: thema, depot: chosen(f, 'depot'), bank: bank, betrag: betrag, consent_call: true, consent_data: true, consent_text_call: CALL, consent_text_data: DATA, ts: new Date().toISOString(), page: location.pathname, quelle: (MT.prefill && MT.prefill.get().quelle) || '' },
-        track: { land: st.land || 'DE', bank: bank, betrag: betrag, prefilled: !!(st.from.bank || st.from.band || st.from.land) }
+        payload: { type: 'rueckruf', form_version: FORM_VERSION, land: st.land || 'DE', telefon: tel, telefon_e164: e164, telefon_land: tl, name: val(f, 'name'), email: em, zeit: rr.modus === 'termin' ? rr.tag + ' ' + rr.fenster + ' Uhr' : 'keine Wunschzeit – Telefonassistent', rueckruf: rr, thema: thema, depot: chosen(f, 'depot'), bank: bank, bank_name: lead.bank, betrag: betrag, prefilled: pfields, consent_call: true, consent_data: true, consent_text_call: callText, consent_text_data: DATA, ts: new Date().toISOString(), page: location.pathname, quelle: quelle, kontext: MT.leadContext ? MT.leadContext(lead) : {} },
+        track: { land: st.land || 'DE', bank: bank, betrag: betrag, prefilled: !!(st.from.bank || st.from.band || st.from.land), rueckruf: rr.modus },
+        popup: when
       };
     }, okCall, 'form_submit');
 
@@ -208,6 +301,30 @@
     }, 'Danke – wir haben Ihren Kontakt für später notiert.', 'form_submit');
   }
 
+  /* Pop-up nach dem Absenden: von welcher Nummer und wann angerufen wird */
+  function thanks(when, demo) {
+    var phone = String((window.MT_CONFIG || {}).CONTACT_PHONE || ''), ok = /^\+\d[\d\s]{6,}$/.test(phone);
+    var dlg = document.getElementById('lf-dlg');
+    if (!dlg) { dlg = document.createElement('dialog'); dlg.id = 'lf-dlg'; dlg.className = 'lf-dlg'; dlg.setAttribute('aria-labelledby', 'lf-dlg-h'); document.body.appendChild(dlg); }
+    dlg.innerHTML = '<button type="button" class="lf-dlg-x" data-close aria-label="Schließen">×</button>' +
+      '<h2 id="lf-dlg-h">Vielen Dank für Ihre Anfrage!</h2>' +
+      '<p>Sie erhalten einen Anruf von</p>' +
+      '<p class="lf-dlg-num">' + (ok ? '<a href="tel:' + esc(phone.replace(/\s/g, '')) + '">' + esc(phone) + '</a>' : '<span class="ph">[Platzhalter: deutsche Rufnummer]</span>') + '</p>' +
+      '<p>' + when + '</p>' +
+      '<p class="small">Speichern Sie die Nummer, damit Sie den Anruf erkennen. Gekauft wird nur über Ihre eigene Bank – keine Anlageberatung.</p>' +
+      (demo ? DEMO_DLG : '') +
+      '<div class="lf-dlg-acts">' + (ok ? '<a class="btn" data-vcard download="MirraTrade.vcf">Nummer speichern</a>' : '') + '<button type="button" class="btn btn--ghost" data-close>Schließen</button></div>';
+    if (ok) {
+      var vcf = 'BEGIN:VCARD\r\nVERSION:3.0\r\nFN:MirraTrade Rückruf\r\nORG:MirraTrade\r\nTEL;TYPE=WORK,VOICE:' + phone.replace(/\s/g, '') + '\r\nEND:VCARD\r\n';
+      try { dlg.querySelector('[data-vcard]').href = URL.createObjectURL(new Blob([vcf], { type: 'text/vcard' })); } catch (e) {}
+    }
+    dlg.onclick = function (e) { if (e.target === dlg || e.target.closest('[data-close]')) dlg.close ? dlg.close() : dlg.removeAttribute('open'); };
+    if (dlg.showModal) { try { dlg.showModal(); } catch (e) { dlg.setAttribute('open', ''); } } else dlg.setAttribute('open', '');
+    var c = dlg.querySelector('.btn, [data-close]'); if (c) c.focus();
+    if (window.MT && MT.track) MT.track('thanks_popup', { phone_set: ok });
+  }
+  var DEMO_DLG = '<p class="lf-demo"><strong>Demo-Modus:</strong> Ihre Angaben wurden NICHT übertragen.</p>';
+
   /* Mini-Faktenbox: erscheint, sobald die Faktenkarte aus dem Bild ist */
   function mini() {
     var card = document.getElementById('fakten'), box = document.getElementById('mini');
@@ -218,6 +335,8 @@
   function boot() {
     var a = document.querySelectorAll('[data-lead-form]');
     for (var i = 0; i < a.length; i++) init(a[i]);
+    var ctx = document.getElementById('reg-ctx'); /* /registration-form/: Hinweis bei Herkunft aus dem Rechner */
+    if (ctx && urlParams().quelle === 'rechner') { ctx.textContent = 'Sie kommen aus dem Entnahmeplan-Rechner. Ihre Rechnung bleibt auf Ihrem Gerät – übernommen wird nur der ungefähre Betrag.'; ctx.hidden = false; }
     mini();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();

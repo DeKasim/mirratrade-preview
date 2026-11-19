@@ -122,6 +122,18 @@ code.isin{font-weight:800;background:var(--bg2);padding:1px 6px;border-radius:5p
 .lf-demo{margin-top:10px;padding:12px 14px;border-radius:10px;background:var(--warn-s);color:var(--warn);font-size:15px;font-weight:400}
 .aus{border-left:5px solid var(--gold)}
 .aus ul{padding-left:20px}
+.lf-time .seg+.seg{margin-top:8px}
+.lf-time-hint{margin:10px 0 0;color:var(--ink2)}
+.lf-link{background:none;border:0;padding:0;color:var(--acc-d);text-decoration:underline;cursor:pointer;font:inherit}
+.lf-dlg{border:0;border-radius:var(--r);padding:32px 28px 24px;max-width:460px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(13,42,63,.25);color:var(--ink)}
+.lf-dlg::backdrop{background:rgba(13,42,63,.55)}
+.lf-dlg h2{font-size:24px;margin:0 32px 12px 0}
+.lf-dlg p{margin:0 0 10px}
+.lf-dlg-num{font-size:30px;font-weight:800;letter-spacing:.01em}
+.lf-dlg-num .ph{font-size:18px;font-weight:700}
+.lf-dlg-num a{color:var(--acc-d);text-decoration:none}
+.lf-dlg-x{position:absolute;top:10px;right:12px;width:40px;height:40px;border:0;background:none;font-size:28px;line-height:1;cursor:pointer;color:var(--muted)}
+.lf-dlg-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .lf .stp{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin:0 0 8px}
 /* Bank-Picker + Stepper */
 .pick{list-style:none;margin:24px 0;padding:0;display:grid;gap:10px}
@@ -144,3 +156,17 @@ code.isin{font-weight:800;background:var(--bg2);padding:1px 6px;border-radius:5p
 .mt-ftr--dark p{margin:0 0 8px}
 @media (max-width:900px){.hero-g,.pg-g{grid-template-columns:1fr;gap:28px}.facts{position:static}.cards3,.steps4{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){body{font-size:17px}.wrap{padding:0 16px}.mt-hdr-in{padding:0 16px}.sec{padding:40px 0 28px}.cards3,.steps4,.two,.lf .two-f{grid-template-columns:1fr}.kv{grid-template-columns:1fr}.kv dt{border-bottom:0;padding-bottom:0}.lvl li{grid-template-columns:1fr;gap:4px;margin-left:0!important}.mini.on{gap:10px}.mini .row:nth-child(2),.mini .row span{display:none}.mini .row .btn--sm::before{content:"ISIN\00a0"}.mini .btn{padding:0 14px;font-size:15px}.lf{padding:18px}.pick li{padding:14px;flex-wrap:wrap;row-gap:8px}.lead{font-size:18px}.mt-hdr-legal .mt-hdr-in span:first-child{font-size:11px}}
+/* /lc002-eti/maerkte-im-minus/ */
+.mk-strip{margin:18px 0;padding:14px 16px;border-left:5px solid var(--ink);background:var(--bg2);border-radius:10px}
+.mk-strip p{margin:0}
+.mk-strip .neg,.mk-table .neg{color:var(--ink);font-weight:800}
+.mk-strip .neg::before,.mk-table .neg::before{content:"▼ ";font-size:.8em}
+.mk-cards{display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:14px;margin:24px 0}
+.mk-card{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px;min-height:150px;padding:18px;background:#fff;border:1px solid var(--line);border-radius:var(--r)}
+.mk-card b{font-size:24px}
+.mk-card span{font-size:15px;color:var(--muted)}
+.mk-card--q{background:var(--acc);border-color:var(--acc);color:#fff}
+.mk-card--q b{font-size:56px;line-height:1}
+.mk-card--q span{color:#fff;font-size:16px}
+.mk-results{margin-top:24px}
+@media (max-width:640px){.mk-cards{grid-template-columns:1fr 1fr}.mk-card--q{grid-column:1/-1}}

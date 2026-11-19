@@ -64,7 +64,7 @@
       if (b && b.slug) h += '<p><a href="/mirratrade-preview/lc002-eti/kaufen/' + esc(b.slug) + '/">Schritt für Schritt bei ' + esc(b.name) + ' →</a></p>';
       if (state !== 'ja') h += '<div class="acts"><button type="button" class="btn" data-help>Wir helfen beim Kauf über Ihre Bank</button></div>';
       res.innerHTML = h;
-      if (MT.prefill) MT.prefill.set({ bank: prefId, quelle: 'check' });
+      if (MT.prefill) MT.prefill.set({ bank: prefId, quelle: 'check', check_state: state === 'kein-depot' ? 'kein_depot' : state, check_bank: b ? b.name : (state === 'kein-depot' ? '' : label) });
       if (MT.track) MT.track('isin_lookup', { bank: prefId, state: state === 'kein-depot' ? 'kein_depot' : state });
       try { document.dispatchEvent(new CustomEvent('mt:prefill')); } catch (e) {}
     }
